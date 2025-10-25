@@ -1,0 +1,35 @@
+services:
+  scanner:
+    image: ghcr.io/sullo/nikto:latest
+    container_name: cybersec_scanner
+    # keep container running
+    entrypoint:
+      - /bin/sh
+      - -c
+      - while true; do sleep 3600; done
+    volumes:
+      - ./scans:/scans
+    networks:
+      - cybersec_net
+
+  webui:
+    build: ./webui
+    container_name: cybersec_webui
+    ports:
+      - "2609:2609"
+    depends_on:
+      - scanner
+    environment:
+      - CYBERSEC_CONTAINER=cybersec_scanner
+      - CYBERSEC_OUTPUT_DIR=/scans
+    volumes:
+      - ./scans:/scans
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - cybersec_net
+
+networks:
+  cybersec_net:
+    driver: bridge
+
+

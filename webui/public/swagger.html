@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Scan - API Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiZ0nBw0B2S94p6p2dtIc8+7wjw==" referrerpolicy="no-referrer" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            900: '#030712',
+                            800: '#050A1A',
+                            700: '#0B1533',
+                            600: '#142554',
+                            500: '#1F3A68',
+                            300: '#3B82F6',
+                            accent: '#22d3ee'
+                        }
+                    },
+                    boxShadow: {
+                        neon: '0 20px 45px -20px rgba(34, 211, 238, 0.45)',
+                        glow: '0 0 120px rgba(59, 130, 246, 0.45)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .swagger-ui .topbar { display: none; }
+        .swagger-ui .scheme-container { background: rgba(15, 23, 42, 0.35); border: none; }
+        .swagger-ui .opblock { background: rgba(15, 23, 42, 0.65); border-radius: 1rem; border: 1px solid rgba(56, 189, 248, 0.15); }
+        .swagger-ui .opblock-summary { border-radius: 1rem; }
+        .swagger-ui .model-box { background: rgba(15, 23, 42, 0.8); }
+        .swagger-ui .response-col_links { text-align: right; }
+    </style>
+</head>
+<body class="min-h-screen bg-brand-900 text-slate-100">
+<header class="sticky top-0 z-30 border-b border-brand-600/40 bg-brand-900/80 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-xs uppercase tracking-[0.4em] text-cyan-200/70">Nikolin CyberSec Lab</p>
+            <h1 class="text-3xl font-bold text-white">CyberSec Scan</h1>
+            <p class="text-sm text-slate-300/80">Interact with the secure REST surface powering local scans.</p>
+        </div>
+        <nav class="flex flex-wrap items-center gap-3 text-sm">
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/">Live Scan</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/status.html">Status</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/list">Saved Reports</a>
+            <a class="px-4 py-2 rounded-full bg-slate-200/10 text-white shadow-neon" href="/swagger.html">API Docs</a>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-16 space-y-12">
+    <section class="relative overflow-hidden rounded-3xl border border-brand-600/50 bg-gradient-to-br from-brand-800/85 via-brand-900/85 to-brand-900/95 p-10 shadow-glow">
+        <div class="absolute -top-28 -left-20 h-64 w-64 rounded-full bg-gradient-to-br from-cyan-400/35 to-blue-500/25 blur-3xl"></div>
+        <div class="absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-gradient-to-br from-blue-400/30 to-sky-500/10 blur-3xl"></div>
+        <div class="relative grid gap-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1fr)]">
+            <div class="space-y-4">
+                <span class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-cyan-200">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    API Surface
+                </span>
+                <h2 class="text-3xl font-bold text-white">Plug CyberSec Scan into any automation loop</h2>
+                <p class="text-sm leading-7 text-slate-300/80">All operations exposed here are the same ones driving the dashboard. Issue scans, monitor telemetry, and harvest artifacts programmatically while staying inside a trusted localhost boundary.</p>
+                <div class="grid gap-3 text-xs text-slate-300/70">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-brand-600/40 bg-brand-800/70 px-3 py-1"><i class="fa-solid fa-lock text-cyan-300"></i>Local only · no auth</span>
+                    <span class="inline-flex items-center gap-2 rounded-full border border-brand-600/40 bg-brand-800/70 px-3 py-1"><i class="fa-solid fa-plug-circle-bolt text-cyan-300"></i>SSE streaming</span>
+                </div>
+            </div>
+            <div class="rounded-3xl border border-brand-600/40 bg-brand-900/70 p-6 text-sm text-slate-200">
+                <p class="text-xs uppercase tracking-[0.3em] text-cyan-200/80">Quickstart</p>
+                <pre class="mt-4 whitespace-pre-wrap rounded-2xl border border-brand-600/40 bg-brand-800/70 p-4 font-mono text-xs text-cyan-200">
+POST /scan-stream
+{
+  "target": "https://example.com",
+  "format": "html"
+}
+                </pre>
+                <p class="mt-4 text-xs text-slate-300/70">Keep the dashboard open for human-in-the-loop control while automation handles queuing and retrieval.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="rounded-3xl border border-brand-600/40 bg-brand-900/70 p-6 shadow-glow">
+        <div id="swagger-ui"></div>
+    </section>
+</main>
+
+<footer class="border-t border-brand-600/40 bg-brand-900/80 py-8 text-center text-sm text-slate-500">
+    &copy; 2025 Nikolin CyberSec Scan - Localhost guardian
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        SwaggerUIBundle({
+            url: '/swagger.json',
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis],
+            layout: 'BaseLayout'
+        });
+    });
+</script>
+</body>
+</html>

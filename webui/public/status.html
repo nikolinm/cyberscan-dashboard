@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Scan - Scan Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiZ0nBw0B2S94p6p2dtIc8+7wjw==" referrerpolicy="no-referrer" crossorigin="anonymous" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            900: '#030712',
+                            800: '#050A1A',
+                            700: '#0B1533',
+                            600: '#142554',
+                            500: '#1F3A68',
+                            300: '#3B82F6',
+                            accent: '#22d3ee'
+                        }
+                    },
+                    boxShadow: {
+                        neon: '0 20px 45px -20px rgba(34, 211, 238, 0.45)',
+                        glow: '0 0 120px rgba(59, 130, 246, 0.45)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-brand-900 text-slate-100">
+<header class="sticky top-0 z-30 border-b border-brand-600/40 bg-brand-900/80 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-xs uppercase tracking-[0.4em] text-cyan-200/70">Nikolin CyberSec Lab</p>
+            <h1 class="text-3xl font-bold text-white">CyberSec Scan</h1>
+            <p class="text-sm text-slate-300/80">Monitor missions, orchestrate recovery, archive intel.</p>
+        </div>
+        <nav class="flex flex-wrap items-center gap-3 text-sm">
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/">Live Scan</a>
+            <a class="px-4 py-2 rounded-full bg-slate-200/10 text-white shadow-neon" href="/status.html">Status</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/list">Saved Reports</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/swagger.html">API Docs</a>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-16 space-y-12">
+    <section class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div class="relative overflow-hidden rounded-3xl border border-brand-600/50 bg-gradient-to-br from-brand-800/80 via-brand-900/80 to-brand-900/90 p-8 shadow-glow">
+            <div class="absolute -top-16 -left-12 h-56 w-56 rounded-full bg-gradient-to-br from-cyan-400/40 to-blue-500/20 blur-3xl"></div>
+            <div class="absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/30 to-sky-500/10 blur-3xl"></div>
+            <div class="relative space-y-6">
+                <div>
+                    <span class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-cyan-200">Mission Feed</span>
+                    <h2 class="mt-4 text-2xl font-semibold text-white">Current Scan Telemetry</h2>
+                </div>
+                <div id="statusInfo" class="space-y-4 rounded-2xl border border-brand-600/50 bg-brand-900/70 p-5">
+                    <p class="text-sm text-slate-300/80">Loading status...</p>
+                </div>
+                <div id="statusMessages" class="space-y-3"></div>
+                <div class="flex flex-wrap gap-4">
+                    <button id="resumeBtn" class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-cyan-400/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-100 shadow-neon hover:bg-cyan-300/30 transition disabled:cursor-not-allowed disabled:border-slate-600/40 disabled:bg-slate-700/40 disabled:text-slate-400" disabled>
+                        <i class="fa-solid fa-pause"></i>
+                        Pause/Resume
+                    </button>
+                    <button id="stopBtn" class="inline-flex items-center gap-2 rounded-full border border-red-400/40 bg-red-500/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-red-200 hover:bg-red-400/30 transition disabled:cursor-not-allowed disabled:border-slate-600/40 disabled:bg-slate-700/40 disabled:text-slate-400" disabled>
+                        <i class="fa-solid fa-octagon-exclamation"></i>
+                        Stop Scan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-3xl border border-brand-600/50 bg-gradient-to-br from-brand-900/70 via-brand-800/70 to-brand-700/60 p-8 shadow-glow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-cyan-200/70">Archive</p>
+                    <h2 class="text-2xl font-semibold text-white">Report Vault</h2>
+                </div>
+                <span class="rounded-full border border-cyan-300/40 bg-cyan-200/15 px-3 py-1 text-xs text-cyan-100"><i class="fa-solid fa-folder-open mr-2"></i>Local copies</span>
+            </div>
+            <div class="mt-6 overflow-hidden rounded-2xl border border-brand-600/50">
+                <table class="min-w-full divide-y divide-brand-700/50">
+                    <thead class="bg-brand-800/80 text-xs uppercase tracking-[0.25em] text-cyan-200/70">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Filename</th>
+                            <th class="px-4 py-3 text-left">Format</th>
+                            <th class="px-4 py-3 text-right">Download</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyList" class="divide-y divide-brand-700/50 bg-brand-900/60 text-sm">
+                        <tr>
+                            <td colspan="3" class="px-4 py-6 text-center text-slate-400">Loading history...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-xs text-slate-400">Artifacts persist inside the home directory mounted to <code class="font-mono text-cyan-200">/scans</code>.</p>
+        </div>
+    </section>
+</main>
+
+<footer class="border-t border-brand-600/40 bg-brand-900/80 py-8 text-center text-sm text-slate-500">
+    &copy; 2025 Nikolin CyberSec Scan - Engineered for localhost defenders
+</footer>
+
+<script>
+    const statusInfo = document.getElementById('statusInfo');
+    const statusMessages = document.getElementById('statusMessages');
+    const stopBtn = document.getElementById('stopBtn');
+    const resumeBtn = document.getElementById('resumeBtn');
+    const historyList = document.getElementById('historyList');
+
+    let currentScanId = null;
+
+    const statusTone = status => {
+        const tones = {
+            running: 'bg-emerald-400/15 text-emerald-200 border border-emerald-400/40',
+            paused: 'bg-amber-400/15 text-amber-200 border border-amber-400/40',
+            completed: 'bg-cyan-400/15 text-cyan-200 border border-cyan-300/40',
+            failed: 'bg-rose-400/10 text-rose-200 border border-rose-500/40',
+            aborted: 'bg-rose-400/10 text-rose-200 border border-rose-500/40'
+        };
+        return tones[status] || 'bg-slate-700/30 text-slate-100 border border-slate-600/40';
+    };
+
+    function appendStatusMessage(message, variant = 'info') {
+        const wrapper = document.createElement('div');
+        wrapper.className = `flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm shadow-inner ${variant === 'error' ? 'border-rose-500/40 bg-rose-500/10 text-rose-100' : 'border-cyan-300/40 bg-cyan-400/10 text-cyan-100'}`;
+        wrapper.innerHTML = `<i class="fa-solid ${variant === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i><span>${message}</span>`;
+        statusMessages.appendChild(wrapper);
+    }
+
+    async function loadStatus() {
+        try {
+            const resp = await fetch('/scan-status');
+            const obj = await resp.json();
+            statusMessages.innerHTML = '';
+            if (!obj.scanId) {
+                currentScanId = null;
+                statusInfo.innerHTML = '<p class="text-sm text-slate-300/80">No scan in progress.</p>';
+                stopBtn.disabled = true;
+                resumeBtn.disabled = true;
+                resumeBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause/Resume';
+                return;
+            }
+
+            currentScanId = obj.scanId;
+            const statusChip = statusTone(obj.status);
+            const reportLink = obj.fileName ? `<a class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 px-3 py-1 text-xs uppercase tracking-[0.2em] text-cyan-100 hover:bg-cyan-300/10" href="/reports/${obj.fileName}" download><i class="fa-solid fa-download"></i>${obj.fileName}</a>` : '<span class="text-slate-400">Pending</span>';
+
+            statusInfo.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center gap-3 text-sm text-slate-300/80">
+                        <span class="rounded-full border border-brand-600/50 bg-brand-800/80 px-3 py-1 font-mono text-xs uppercase tracking-[0.3em] text-cyan-200">${obj.scanId}</span>
+                        <span class="rounded-full px-3 py-1 text-xs uppercase tracking-[0.3em] ${statusChip}">${obj.status}</span>
+                    </div>
+                    <dl class="grid gap-3 text-sm text-slate-200/90">
+                        <div class="flex items-center justify-between gap-4 border-b border-brand-700/40 pb-2">
+                            <dt class="text-slate-400">Target</dt>
+                            <dd class="font-mono text-sm text-cyan-100">${obj.target || '-'}</dd>
+                        </div>
+                        <div class="flex items-center justify-between gap-4 border-b border-brand-700/40 pb-2">
+                            <dt class="text-slate-400">Report</dt>
+                            <dd>${reportLink}</dd>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <dt class="text-slate-400">Lifecycle</dt>
+                            <dd class="text-xs text-slate-300/80">Paused scans resume seamlessly after reconnect.</dd>
+                        </div>
+                    </dl>
+                </div>
+            `;
+
+            stopBtn.disabled = obj.status !== 'running';
+            const canToggle = obj.status === 'running' || obj.status === 'paused';
+            resumeBtn.disabled = !canToggle;
+            resumeBtn.innerHTML = obj.status === 'paused'
+                ? '<i class="fa-solid fa-play"></i> Resume Scan'
+                : '<i class="fa-solid fa-pause"></i> Pause Scan';
+        } catch (err) {
+            statusInfo.innerHTML = '<p class="text-sm text-rose-200">Unable to load status.</p>';
+            stopBtn.disabled = true;
+            resumeBtn.disabled = true;
+        }
+    }
+
+    async function loadHistory() {
+        try {
+            const resp = await fetch('/history');
+            const obj = await resp.json();
+            historyList.innerHTML = '';
+            if (!Array.isArray(obj.reports) || obj.reports.length === 0) {
+                historyList.innerHTML = '<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">No reports yet.</td></tr>';
+                return;
+            }
+            obj.reports.forEach(file => {
+                const ext = file.split('.').pop().toUpperCase();
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-brand-700/40 last:border-none';
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-slate-100">${file}</td>
+                    <td class="px-4 py-3 text-xs uppercase tracking-[0.3em] text-cyan-200/80">${ext}</td>
+                    <td class="px-4 py-3 text-right"><a class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200 hover:bg-cyan-300/10 transition" href="/reports/${file}" download><i class="fa-solid fa-download"></i>Download</a></td>
+                `;
+                historyList.appendChild(tr);
+            });
+        } catch (err) {
+            historyList.innerHTML = '<tr><td colspan="3" class="px-4 py-6 text-center text-rose-200">Unable to load history.</td></tr>';
+        }
+    }
+
+    stopBtn.addEventListener('click', async () => {
+        if (!currentScanId) {
+            return;
+        }
+        try {
+            const resp = await fetch('/scan-stop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scanId: currentScanId })
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                appendStatusMessage(data.error || 'Unable to stop scan.', 'error');
+                return;
+            }
+            await loadStatus();
+            appendStatusMessage('Scan aborted by user.');
+        } catch (err) {
+            appendStatusMessage('Failed to stop scan.', 'error');
+        }
+    });
+
+    resumeBtn.addEventListener('click', async () => {
+        if (!currentScanId) {
+            return;
+        }
+        try {
+            const resp = await fetch('/scan-pause', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scanId: currentScanId })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.status) {
+                appendStatusMessage(data.error || 'Unable to toggle scan state.', 'error');
+                return;
+            }
+            await loadStatus();
+            appendStatusMessage(data.status === 'paused' ? 'Scan paused.' : 'Scan resumed.');
+        } catch (err) {
+            appendStatusMessage('Failed to toggle scan state.', 'error');
+        }
+    });
+
+    window.addEventListener('load', () => {
+        loadStatus();
+        loadHistory();
+    });
+</script>
+</body>
+</html>
+

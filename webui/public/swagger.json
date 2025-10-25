@@ -1,0 +1,318 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CyberSec Scan API",
+    "version": "1.0.0",
+    "description": "Local-only endpoints used by CyberSec Scan to launch jobs, monitor progress, and serve stored reports."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:2609",
+      "description": "Local runtime"
+    }
+  ],
+  "paths": {
+    "/scan-stream": {
+      "get": {
+        "summary": "Start a new scan or attach to an existing stream",
+        "description": "When called with `target`, starts a new scan and streams live output as Server-Sent Events. When called with only `scanId`, re-attaches to an existing stream.",
+        "parameters": [
+          {
+            "name": "target",
+            "in": "query",
+            "description": "Target URL or IP to scan.",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "port",
+            "in": "query",
+            "description": "Optional target port (1-65535).",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 65535 }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Report output format.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "html",
+              "enum": ["html", "csv", "txt", "xml"]
+            }
+          },
+          {
+            "name": "tuning",
+            "in": "query",
+            "description": "Scanner tuning flags (0-9, a, b, c, x).",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ssl",
+            "in": "query",
+            "description": "Force SSL mode.",
+            "required": false,
+            "schema": { "type": "boolean" }
+          },
+          {
+            "name": "scanId",
+            "in": "query",
+            "description": "Existing scan identifier used to re-attach to a stream.",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live scanner output streamed as text/event-stream.",
+            "content": {
+              "text/event-stream": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid query parameters.",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Scan not found when trying to re-attach.",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scan-status": {
+      "get": {
+        "summary": "Fetch the current session scan info",
+        "responses": {
+          "200": {
+            "description": "Current scan state, if one is associated with the session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScanStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scan-stop": {
+      "post": {
+        "summary": "Stop a running scan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scan aborted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "scanId": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid scan ID or scan not running.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Scan ID not found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scan-pause": {
+      "post": {
+        "summary": "Toggle pause/resume on the active scan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scan paused or resumed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "scanId": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid scan ID or invalid state change.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Scan ID not found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "summary": "List saved reports as JSON",
+        "responses": {
+          "200": {
+            "description": "Array of saved report filenames ordered newest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reports": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/{file}": {
+      "get": {
+        "summary": "Download a generated report",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "path",
+            "required": true,
+            "description": "Report filename (must match generated naming pattern).",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._-]+\\.(html|csv|txt|xml)$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Report file.",
+            "content": {
+              "text/html": {},
+              "text/plain": {},
+              "text/csv": {},
+              "application/xml": {}
+            }
+          },
+          "400": {
+            "description": "Invalid report name.",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Report not found.",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ScanStatus": {
+        "type": "object",
+        "properties": {
+          "scanId": {
+            "type": ["string", "null"],
+            "description": "Current scan identifier or null when idle."
+          },
+          "status": {
+            "type": ["string", "null"],
+            "description": "Status of the current scan (running, paused, completed, aborted)."
+          },
+          "fileName": {
+            "type": ["string", "null"],
+            "description": "Report file associated with the scan, if available."
+          },
+          "target": {
+            "type": ["string", "null"],
+            "description": "Target of the current scan."
+          }
+        }
+      },
+      "ScanActionRequest": {
+        "type": "object",
+        "required": ["scanId"],
+        "properties": {
+          "scanId": {
+            "type": "string",
+            "description": "Numeric scan identifier returned when the scan was started."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+

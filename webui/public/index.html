@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Scan - Live Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiZ0nBw0B2S94p6p2dtIc8+7wjw==" referrerpolicy="no-referrer" crossorigin="anonymous" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            900: '#030712',
+                            800: '#050A1A',
+                            700: '#0B1533',
+                            600: '#142554',
+                            500: '#1F3A68',
+                            300: '#3B82F6',
+                            accent: '#22d3ee'
+                        }
+                    },
+                    boxShadow: {
+                        neon: '0 20px 45px -20px rgba(34, 211, 238, 0.45)',
+                        glow: '0 0 120px rgba(59, 130, 246, 0.45)'
+                    },
+                    animation: {
+                        pulseSlow: 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        float: 'float 12s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-900 text-slate-100 min-h-screen">
+<header class="sticky top-0 z-30 backdrop-blur-md bg-brand-900/80 border-b border-brand-600/40">
+    <div class="mx-auto max-w-6xl px-6 py-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-xs uppercase tracking-[0.4em] text-cyan-200/70">Nikolin CyberSec Lab</p>
+            <h1 class="text-3xl font-bold text-white">CyberSec Scan</h1>
+            <p class="text-sm text-slate-300/80">Futuristic localhost assessment cockpit</p>
+        </div>
+        <nav class="flex flex-wrap items-center gap-3 text-sm">
+            <a class="px-4 py-2 rounded-full bg-slate-200/10 text-white shadow-neon" href="/">Live Scan</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/status.html">Status</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/list">Saved Reports</a>
+            <a class="px-4 py-2 rounded-full hover:bg-slate-200/10 transition" href="/swagger.html">API Docs</a>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-16 space-y-16">
+    <section class="relative overflow-hidden rounded-3xl border border-brand-600/40 bg-gradient-to-br from-brand-700/90 via-brand-800/80 to-brand-900/90 shadow-glow">
+        <div class="absolute -top-32 -left-24 h-72 w-72 rounded-full bg-gradient-to-br from-cyan-400/40 to-blue-500/20 blur-3xl animate-pulseSlow"></div>
+        <div class="absolute -bottom-24 -right-10 h-80 w-80 rounded-full bg-gradient-to-br from-blue-400/30 to-sky-500/10 blur-3xl animate-float"></div>
+        <div class="relative grid gap-12 p-12 lg:grid-cols-[1.4fr_1fr]">
+            <div class="space-y-6">
+                <span class="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-cyan-200">Local-only Security Suite</span>
+                <h2 class="text-4xl font-extrabold leading-tight text-white sm:text-5xl">Command every surface without leaving your terminal.</h2>
+                <p class="max-w-xl text-base leading-7 text-slate-200/90">CyberSec Scan fuses hardened Docker workflows with a sleek control layer. Launch high-signal scans, stream logs in real time, and capture artefacts with a single interface engineered for defenders.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#start" class="inline-flex items-center gap-2 rounded-full bg-cyan-400/90 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand-900 shadow-neon hover:bg-cyan-300 transition"><i class="fa-solid fa-rocket"></i> Launch Scan</a>
+                    <a href="/swagger.html" class="inline-flex items-center gap-2 rounded-full border border-cyan-200/40 bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-100 hover:bg-cyan-200/10 transition"><i class="fa-solid fa-compass"></i> API Atlas</a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute inset-x-8 -top-6 h-24 rounded-full bg-cyan-400/20 blur-3xl"></div>
+                <div class="relative backdrop-blur-xl rounded-2xl border border-slate-100/20 bg-white/5 shadow-neon">
+                    <div class="flex items-center justify-between px-6 py-4">
+                        <span class="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-200/80">Console</span>
+                        <div class="flex gap-2 text-xs text-slate-100/80">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-cyan-300"></i> Hardened</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-cyan-300"></i> SSE</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4 px-6 pb-6">
+                        <div class="grid gap-3">
+                            <div class="rounded-xl border border-slate-200/10 bg-slate-900/70 p-4 text-sm leading-6 text-slate-200">
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-wifi text-cyan-300"></i><span>Session-aware streaming with automatic resume.</span></div>
+                            </div>
+                            <div class="rounded-xl border border-slate-200/10 bg-slate-900/70 p-4 text-sm leading-6 text-slate-200">
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-box-archive text-cyan-300"></i><span>Encrypted vault for HTML, CSV, TXT, and XML artefacts.</span></div>
+                            </div>
+                            <div class="rounded-xl border border-slate-200/10 bg-slate-900/70 p-4 text-sm leading-6 text-slate-200">
+                                <div class="flex items-center gap-3"><i class="fa-solid fa-gauge-high text-cyan-300"></i><span>One-click pause, resume, and terminate control plane.</span></div>
+                            </div>
+                        </div>
+                        <div class="rounded-xl border border-slate-200/10 bg-slate-950/70 p-4 text-xs font-mono text-cyan-200/90">
+                            <div class="flex items-center gap-2 text-slate-300/90"><i class="fa-solid fa-terminal text-cyan-400"></i>cybersec-scan.live</div>
+                            <div class="mt-2 grid gap-1 text-slate-300/90">
+                                <span>&gt; awaiting target ...</span>
+                                <span>&gt; last session recovered</span>
+                                <span>&gt; artefact channel primed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4" aria-label="Quick navigation cards">
+        <a class="group rounded-2xl border border-brand-600/40 bg-brand-800/60 px-6 py-7 shadow-lg transition hover:-translate-y-1 hover:border-cyan-200/60 hover:bg-brand-700/70" href="/status.html">
+            <div class="flex items-center justify-between text-cyan-200/80">
+                <i class="fa-solid fa-wave-square text-2xl"></i>
+                <i class="fa-solid fa-chevron-right text-xs opacity-0 transition group-hover:opacity-100"></i>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-white">Active Scan Status</h3>
+            <p class="mt-3 text-sm text-slate-300/80">Visualise live state, resume paused sessions, or halt runaway jobs instantly.</p>
+        </a>
+        <a class="group rounded-2xl border border-brand-600/40 bg-brand-800/60 px-6 py-7 shadow-lg transition hover:-translate-y-1 hover:border-cyan-200/60 hover:bg-brand-700/70" href="/list">
+            <div class="flex items-center justify-between text-cyan-200/80">
+                <i class="fa-solid fa-folder-open text-2xl"></i>
+                <i class="fa-solid fa-chevron-right text-xs opacity-0 transition group-hover:opacity-100"></i>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-white">Saved Reports</h3>
+            <p class="mt-3 text-sm text-slate-300/80">Retrieve completed artefacts and hand them off for triage or sharing.</p>
+        </a>
+        <a class="group rounded-2xl border border-brand-600/40 bg-brand-800/60 px-6 py-7 shadow-lg transition hover:-translate-y-1 hover:border-cyan-200/60 hover:bg-brand-700/70" href="/history">
+            <div class="flex items-center justify-between text-cyan-200/80">
+                <i class="fa-solid fa-cloud-arrow-down text-2xl"></i>
+                <i class="fa-solid fa-chevron-right text-xs opacity-0 transition group-hover:opacity-100"></i>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-white">History Feed</h3>
+            <p class="mt-3 text-sm text-slate-300/80">Consume a JSON index of reports for downstream automation pipelines.</p>
+        </a>
+        <a class="group rounded-2xl border border-brand-600/40 bg-brand-800/60 px-6 py-7 shadow-lg transition hover:-translate-y-1 hover:border-cyan-200/60 hover:bg-brand-700/70" href="/swagger.html">
+            <div class="flex items-center justify-between text-cyan-200/80">
+                <i class="fa-solid fa-network-wired text-2xl"></i>
+                <i class="fa-solid fa-chevron-right text-xs opacity-0 transition group-hover:opacity-100"></i>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-white">API Explorer</h3>
+            <p class="mt-3 text-sm text-slate-300/80">Discover and test REST endpoints powering the CyberSec Scan stack.</p>
+        </a>
+    </section>
+
+    <section id="start" class="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+        <div class="rounded-3xl border border-brand-600/40 bg-brand-800/70 p-8 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-cyan-200">Initiate</p>
+                    <h2 class="text-2xl font-semibold text-white">New Scan</h2>
+                </div>
+                <span class="rounded-full bg-cyan-400/20 px-3 py-1 text-xs uppercase tracking-[0.3em] text-cyan-100">SSE Ready</span>
+            </div>
+            <form id="scanForm" class="mt-8 space-y-6" autocomplete="off">
+                <div>
+                    <label for="target" class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-100">Target URL or IP</label>
+                    <input id="target" name="target" type="url" required placeholder="https://example.com" class="mt-2 w-full rounded-2xl border border-brand-600/50 bg-brand-900/60 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/40" />
+                </div>
+                <div class="grid gap-6 sm:grid-cols-2">
+                    <label class="flex items-center gap-3 rounded-2xl border border-brand-600/50 bg-brand-900/60 px-4 py-3 text-sm font-semibold text-slate-200/90">
+                        <input id="ssl" name="ssl" type="checkbox" class="h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" />
+                        <span>Force SSL handshake</span>
+                    </label>
+                    <div>
+                        <label for="port" class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-100">Port (optional)</label>
+                        <input id="port" name="port" type="text" placeholder="443" class="mt-2 w-full rounded-2xl border border-brand-600/50 bg-brand-900/60 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/40" />
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <label class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-100">Scan Tuning</label>
+                    <div class="relative">
+                        <button type="button" id="tuningDropdown" class="flex w-full items-center justify-between rounded-2xl border border-brand-600/50 bg-brand-900/60 px-4 py-3 text-sm text-slate-100 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/40">
+                            <span id="tuningSummary" class="text-left text-slate-300/90">Select profiles</span>
+                            <i class="fa-solid fa-angle-down text-cyan-200"></i>
+                        </button>
+                        <div id="tuningMenu" class="absolute left-0 right-0 z-20 mt-2 hidden max-h-72 overflow-y-auto overflow-x-auto rounded-2xl border border-brand-500/40 bg-brand-900/95 p-3 shadow-xl">
+                            <div class="text-xs uppercase tracking-[0.3em] text-cyan-200/70 px-2 pb-2">Profiles</div>
+                            <div class="grid gap-1">
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="0" data-label="File upload tests" />
+                                    <span>0 File upload tests</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="1" data-label="Interesting files" />
+                                    <span>1 Interesting files</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="2" data-label="Misconfiguration" />
+                                    <span>2 Misconfiguration</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="3" data-label="Information disclosure" />
+                                    <span>3 Information disclosure</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="4" data-label="Injection" />
+                                    <span>4 Injection</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="5" data-label="Remote file retrieval (root)" />
+                                    <span>5 Remote file retrieval (web root)</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="6" data-label="Denial of service" />
+                                    <span>6 Denial of service</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="7" data-label="Remote file retrieval (server)" />
+                                    <span>7 Remote file retrieval (server wide)</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="8" data-label="Command execution" />
+                                    <span>8 Command execution</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="9" data-label="SQL injection" />
+                                    <span>9 SQL injection</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="a" data-label="Authentication bypass" />
+                                    <span>a Authentication bypass</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="b" data-label="Software identification" />
+                                    <span>b Software identification</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="c" data-label="Remote source inclusion" />
+                                    <span>c Remote source inclusion</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-brand-800/60">
+                                    <input type="checkbox" class="tuning-option h-4 w-4 rounded border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" value="x" data-label="Exclude tests" />
+                                    <span>x Exclude specified tests</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="tuningChips" class="flex flex-wrap gap-2"></div>
+                        <input type="hidden" id="tuningHidden" name="tuning" value="" />
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <span class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-100">Output format</span>
+                    <div class="flex flex-wrap gap-3">
+                        <label class="inline-flex items-center gap-2 rounded-full border border-brand-600/50 bg-brand-900/60 px-4 py-2 text-sm text-slate-100 hover:border-cyan-300/60">
+                            <input id="format_html" name="format" type="radio" value="html" checked class="h-4 w-4 border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" />
+                            HTML
+                        </label>
+                        <label class="inline-flex items-center gap-2 rounded-full border border-brand-600/50 bg-brand-900/60 px-4 py-2 text-sm text-slate-100 hover:border-cyan-300/60">
+                            <input id="format_csv" name="format" type="radio" value="csv" class="h-4 w-4 border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" />
+                            CSV
+                        </label>
+                        <label class="inline-flex items-center gap-2 rounded-full border border-brand-600/50 bg-brand-900/60 px-4 py-2 text-sm text-slate-100 hover:border-cyan-300/60">
+                            <input id="format_txt" name="format" type="radio" value="txt" class="h-4 w-4 border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" />
+                            Plain Text
+                        </label>
+                        <label class="inline-flex items-center gap-2 rounded-full border border-brand-600/50 bg-brand-900/60 px-4 py-2 text-sm text-slate-100 hover:border-cyan-300/60">
+                            <input id="format_xml" name="format" type="radio" value="xml" class="h-4 w-4 border border-cyan-300/40 bg-brand-900/80 text-cyan-300 focus:ring-cyan-400/60" />
+                            XML
+                        </label>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-cyan-400/90 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand-900 shadow-neon hover:bg-cyan-300 transition">
+                        <i class="fa-solid fa-circle-play"></i>
+                        Start Scan
+                    </button>
+                    <button type="button" id="stopBtn" disabled class="inline-flex items-center gap-2 rounded-full border border-red-400/40 bg-red-500/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-red-200 disabled:cursor-not-allowed disabled:opacity-60">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Stop Scan
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="min-w-0 rounded-3xl border border-brand-600/60 bg-gradient-to-br from-brand-900/70 via-brand-800/70 to-brand-700/60 p-6 shadow-neon">
+            <div class="flex items-center justify-between px-2">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-cyan-200/80">Telemetry</p>
+                    <h2 class="text-xl font-semibold text-white">Live Stream</h2>
+                </div>
+                <span class="flex items-center gap-2 rounded-full border border-cyan-300/40 bg-cyan-200/15 px-3 py-1 text-xs text-cyan-100"><span class="h-2 w-2 animate-ping rounded-full bg-cyan-300"></span>Streaming</span>
+            </div>
+            <pre id="logOutput" class="mt-5 h-[360px] w-full max-w-full overflow-y-auto overflow-x-auto rounded-2xl border border-brand-600/60 bg-slate-950/80 p-5 text-sm leading-7 text-cyan-100 shadow-inner font-mono whitespace-pre-wrap break-words"></pre>
+        </div>
+    </section>
+</main>
+
+<footer class="border-t border-brand-600/40 bg-brand-900/80 py-10 text-center text-sm text-slate-400">
+    &copy; 2025 Nikolin CyberSec Scan - Built for localhost defenders
+</footer>
+
+<script>
+    const form = document.getElementById('scanForm');
+    const log = document.getElementById('logOutput');
+    const stopBtn = document.getElementById('stopBtn');
+    let eventSource = null;
+    let currentScanId = null;
+
+    const tuningDropdown = document.getElementById('tuningDropdown');
+    const tuningMenu = document.getElementById('tuningMenu');
+    const tuningHidden = document.getElementById('tuningHidden');
+    const tuningSummary = document.getElementById('tuningSummary');
+    const tuningChips = document.getElementById('tuningChips');
+    const tuningOptions = Array.from(document.querySelectorAll('.tuning-option'));
+
+    function closeMenu() {
+        tuningMenu.classList.add('hidden');
+        tuningDropdown.setAttribute('aria-expanded', 'false');
+    }
+
+    function openMenu() {
+        tuningMenu.classList.remove('hidden');
+        tuningDropdown.setAttribute('aria-expanded', 'true');
+    }
+
+    tuningDropdown.addEventListener('click', () => {
+        tuningMenu.classList.toggle('hidden');
+        const expanded = tuningMenu.classList.contains('hidden') ? 'false' : 'true';
+        tuningDropdown.setAttribute('aria-expanded', expanded);
+    });
+
+    document.addEventListener('click', event => {
+        if (!tuningMenu.contains(event.target) && !tuningDropdown.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+            closeMenu();
+        }
+    });
+
+    function renderTuningSelection() {
+        const selected = tuningOptions.filter(opt => opt.checked);
+        const values = selected.map(opt => opt.value);
+        const labels = selected.map(opt => opt.dataset.label);
+        tuningHidden.value = values.join('');
+        tuningSummary.textContent = labels.length ? labels.join(', ') : 'Select profiles';
+        tuningChips.innerHTML = '';
+        labels.forEach(label => {
+            const chip = document.createElement('span');
+            chip.className = 'flex items-center gap-2 rounded-full bg-cyan-300/15 px-3 py-1 text-xs uppercase tracking-[0.2em] text-cyan-100';
+            chip.textContent = label;
+            tuningChips.appendChild(chip);
+        });
+    }
+
+    tuningOptions.forEach(opt => {
+        opt.addEventListener('change', renderTuningSelection);
+    });
+
+    renderTuningSelection();
+
+    function appendLog(message) {
+        log.textContent += `${message}\n`;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function closeStream(message) {
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+        if (message) {
+            appendLog(message);
+        }
+        stopBtn.disabled = true;
+        stopBtn.classList.add('opacity-60', 'cursor-not-allowed');
+    }
+
+    async function stopActiveScan() {
+        if (!currentScanId) {
+            return;
+        }
+        try {
+            const resp = await fetch('/scan-stop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scanId: currentScanId })
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                appendLog(`[ERR] ${data.error || 'Unable to stop scan'}`);
+                return;
+            }
+            appendLog('** Scan aborted by user **');
+            closeStream();
+        } catch (err) {
+            appendLog(`[ERR] ${err.message}`);
+        }
+    }
+
+    stopBtn.addEventListener('click', stopActiveScan);
+
+    function startStream(url, allowStopOnInfo) {
+        if (eventSource) {
+            eventSource.close();
+        }
+        eventSource = new EventSource(url);
+        eventSource.onmessage = e => {
+            const msg = e.data;
+            appendLog(msg);
+            if (msg.startsWith('[INFO] Scan ID: ')) {
+                currentScanId = msg.substring('[INFO] Scan ID: '.length).trim();
+                if (allowStopOnInfo) {
+                    stopBtn.disabled = false;
+                    stopBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
+            }
+        };
+        eventSource.onerror = () => {
+            const source = eventSource;
+            const isClosed = source && source.readyState === EventSource.CLOSED;
+            closeStream(isClosed ? '** Stream closed **' : '** Connection closed or error occurred **');
+        };
+    }
+
+    async function checkExistingScan() {
+        try {
+            const resp = await fetch('/scan-status');
+            const obj = await resp.json();
+            if (!obj.scanId) {
+                stopBtn.disabled = true;
+                stopBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                return;
+            }
+            currentScanId = obj.scanId;
+            appendLog(`[INFO] Resuming previous scan ID: ${currentScanId}`);
+            const allowStop = obj.status === 'running';
+            if (!allowStop) {
+                stopBtn.disabled = true;
+                stopBtn.classList.add('opacity-60', 'cursor-not-allowed');
+            } else {
+                stopBtn.disabled = false;
+                stopBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+            startStream(`/scan-stream?scanId=${encodeURIComponent(currentScanId)}`, allowStop);
+        } catch (err) {
+            appendLog('[ERR] Unable to check scan status');
+        }
+    }
+
+    window.addEventListener('load', checkExistingScan);
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        log.textContent = '';
+        currentScanId = null;
+        stopBtn.disabled = true;
+        stopBtn.classList.add('opacity-60', 'cursor-not-allowed');
+
+        const targetVal = document.getElementById('target').value.trim();
+        const sslVal = document.getElementById('ssl').checked;
+        const portVal = document.getElementById('port').value.trim();
+        const tuningVal = tuningHidden.value;
+        const formatVal = document.querySelector('input[name="format"]:checked').value;
+
+        const params = new URLSearchParams();
+        params.append('target', targetVal);
+        if (sslVal) params.append('ssl', 'true');
+        if (portVal) params.append('port', portVal);
+        if (tuningVal) params.append('tuning', tuningVal);
+        params.append('format', formatVal);
+
+        startStream(`/scan-stream?${params.toString()}`, true);
+    });
+</script>
+</body>
+</html>
+
